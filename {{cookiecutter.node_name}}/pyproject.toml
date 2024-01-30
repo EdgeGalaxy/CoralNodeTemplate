@@ -1,0 +1,32 @@
+[project]
+name = "coral-node"
+version = "0.1.0"
+description = "Add a short description here"
+authors = [
+    { name = "{{ cookiecutter.username }}", email = "{{ cookiecutter.email }}" }
+]
+dependencies = [
+    "coral @ git+https://github.com/EdgeGalaxy/coral.git",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["{{cookiecutter.node_name}}"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+
+[[tool.rye.sources]]
+name = "default"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
