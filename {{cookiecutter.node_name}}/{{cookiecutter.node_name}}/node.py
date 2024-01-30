@@ -75,7 +75,7 @@ class {{cookiecutter.node_cls}}(CoralNode):
         {%- if cookiecutter.node_type == 'DataProducerNode' %}
         raw = np.zeros((640, 640, 3), np.uint8)
         raw[:] = (255, 0, 0)
-        return {{cookiecutter.node_cls}}ReturnPayload(raw=payload)
+        return {{cookiecutter.node_cls}}ReturnPayload(raw=raw)
         {%- elif cookiecutter.node_type == 'YoloNode' %}
         data = context['model'].predict(payload.raw)
         return ObjectsPayload(**data)
