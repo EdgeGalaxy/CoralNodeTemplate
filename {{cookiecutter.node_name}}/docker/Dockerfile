@@ -1,15 +1,14 @@
 FROM python:3.11.7
 
-WORKDIR /app
+# opencv 相关安装so文件
+RUN apt-get update && apt-get install -y libgl1
 
-# install rye
-RUN curl -sSf https://rye-up.com/get | bash
+WORKDIR /workspace
 
-COPY pyproject.tom requirements.lock /app
+COPY ./requirements.lock /workspace
+RUN sed '/-e/d' requirements.lock > requirements.txt
+RUN pip3 install -r requirements.txt
 
-# install package
-RUN rye sync
+COPY . .
 
-COPY . /app
-
-CMD source /app/.venv/bin/activate && cd /app/{{cookiecutter.node_name}} && python3 node.py
+CMD cd {{cookiecutter.node_name}} && python3 node.py
