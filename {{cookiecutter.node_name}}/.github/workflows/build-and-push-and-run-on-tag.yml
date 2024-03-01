@@ -65,7 +65,7 @@ jobs:
       - name: Run Docker container
         run: > 
           docker run ${{ secrets.DOCKER_USERNAME }}/${{ steps.prep.outputs.REPO_NAME }}:${{ steps.extract_tag.outputs.TAG_NAME }} 
-            -e "NODE_REGISTER_URL=${{ secrets.NODE_REGISTER_URL }}" 
-            -e "NODE_NAME=${{ steps.prep.outputs.REPO_NAME }}" 
-            -e "NODE_VERSION=${{ steps.extract_tag.outputs.TAG_NAME }}"
-            -e "NODE_DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ steps.prep.outputs.REPO_NAME }}:${{ steps.extract_tag.outputs.TAG_NAME }}"
+            -e "CORAL_NODE_REGISTER_URL=${{ secrets.NODE_REGISTER_URL }}" 
+            -e "CORAL_NODE_NAME=${{ steps.prep.outputs.REPO_NAME }}" 
+            -e "CORAL_NODE_VERSION=${{ steps.extract_tag.outputs.TAG_NAME }}"
+            -e "CORAL_NODE_DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ steps.prep.outputs.REPO_NAME }}:${{ steps.extract_tag.outputs.TAG_NAME }}"
