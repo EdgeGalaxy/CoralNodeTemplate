@@ -5,6 +5,6 @@
   "node_slug": "{{ cookiecutter.node_name | lower | replace('-', '_') }}",
   "node_desc": "coral node for {{ cookiecutter.node_slug }}",
   "node_cls": "{{ cookiecutter.node_name | replace('-', ' ') | replace('_', ' ') | capitalize | replace(' ', '')}}",
-  "node_type": ["DataProducerNode", "YoloNode", "BusinessNode", "EndNode"],
+  "node_type": ["DataProducerNode", "RecognitionNode", "BusinessNode", "MediaProcessNode"],
   "receiver_node": ""
 }

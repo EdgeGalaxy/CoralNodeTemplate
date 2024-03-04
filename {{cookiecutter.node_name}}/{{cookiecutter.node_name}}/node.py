@@ -6,11 +6,11 @@ from typing import Union
 
 import numpy as np
 from coral import CoralNode, ParamsModel, FirstPayload, RawPayload, RTManager, PTManager
-{%- elif cookiecutter.node_type == 'YoloNode' %}
+{%- elif cookiecutter.node_type == 'RecognitionNode' %}
 from coral import CoralNode, ParamsModel, ObjectsPayload, RawPayload,  RTManager, PTManager
 {%- elif cookiecutter.node_type == 'BusinessNode' %}
 from coral import CoralNode, ParamsModel, ReturnPayload, RawPayload,  RTManager, PTManager
-{%- elif cookiecutter.node_type == 'EndNode' %}
+{%- elif cookiecutter.node_type == 'MediaProcessNode' %}
 from coral import CoralNode, ParamsModel, RawPayload,  RTManager, PTManager
 {%- endif %}
 
@@ -31,7 +31,7 @@ class {{cookiecutter.node_cls}}ReturnPayload(ReturnPayload):
 @PTManager.register()
 class {{cookiecutter.node_cls}}ParamsModel(ParamsModel):
     # 可更改的参数，遵循pydantic的格式
-    {%- if cookiecutter.node_type == 'YoloNode' %}
+    {%- if cookiecutter.node_type == 'RecognitionNode' %}
     model_fp: str = 'model.pt'
     {%- endif %}
     timestamp: float = time.time()
@@ -41,6 +41,7 @@ class {{cookiecutter.node_cls}}(CoralNode):
 
     # 配置文件，默认文件config.json, 可通过环境变量 CORAL_NODE_CONFIG_PATH 覆盖
     config_path = 'config.json'
+    node_type = {{ cookiecutter.node_type }}
 
     def init(self, context: dict):
         """
@@ -50,16 +51,16 @@ class {{cookiecutter.node_cls}}(CoralNode):
         """
         # 获取入参
         print(self.params.timestamp)
-        {%- if cookiecutter.node_type == 'YoloNode' %}
+        {%- if cookiecutter.node_type == 'RecognitionNode' %}
         model = {{ cookiecutter.node_cls }}Algro(self.params.model_fp)
         context['model'] = model
         {%- endif %}
         context['timestamp'] = time.time()
 
 
-    {%- if cookiecutter.node_type == 'EndNode' %}
+    {%- if cookiecutter.node_type == 'MediaProcessNode' %}
     def sender(self, payload: RawPayload, context: Dict) -> None:
-    {%- elif cookiecutter.node_type == 'YoloNode' %}
+    {%- elif cookiecutter.node_type == 'RecognitionNode' %}
     def sender(self, payload: RawPayload, context: Dict) -> ObjectsPayload:
     {%- else %}
     def sender(self, payload: RawPayload, context: Dict) -> {{cookiecutter.node_cls}}ReturnPayload:
@@ -76,12 +77,12 @@ class {{cookiecutter.node_cls}}(CoralNode):
         raw = np.zeros((640, 640, 3), np.uint8)
         raw[:] = (255, 0, 0)
         return {{cookiecutter.node_cls}}ReturnPayload(raw=raw)
-        {%- elif cookiecutter.node_type == 'YoloNode' %}
+        {%- elif cookiecutter.node_type == 'RecognitionNode' %}
         data = context['model'].predict(payload.raw)
         return ObjectsPayload(**data)
         {%- elif cookiecutter.node_type == 'BusinessNode' %}
         return {{ cookiecutter.node_cls }}ReturnPayload()
-        {%- elif cookiecutter.node_type == 'EndNode' %}
+        {%- elif cookiecutter.node_type == 'MediaProcessNode' %}
         return None
         {%- endif %}
 

@@ -18,7 +18,7 @@ cookiecutter https://github.com/EdgeGalaxy/CoralNodeTemplate.git
   "node_slug": "{{ cookiecutter.node_name | lower | replace('-', '_') }}",
   "node_desc": "coral node for {{ cookiecutter.node_slug }}",
   "node_cls": "{{ cookiecutter.node_name | replace('-', ' ') | replace('_', ' ') | capitalize | replace(' ', '')}}",
-  "node_type": ["DataProducerNode", "YoloNode", "BusinessNode", "EndNode"],
+  "node_type": ["DataProducerNode", "RecognitionNode", "BusinessNode", "MediaProcessNode"],
   "receiver_node": ""
 }
 ```
@@ -30,9 +30,9 @@ cookiecutter https://github.com/EdgeGalaxy/CoralNodeTemplate.git
 - node_cls: 节点类名
 - node_type: 节点类型
   - DataProducerNode: 数据生产节点
-  - YoloNode: yolo节点
+  - RecognitionNode: yolo节点
   - BusinessNode: 业务节点
-  - EndNode: 结束节点
+  - MediaProcessNode: 结束节点
 - receiver_node: 接收节点, 非数据生产节点时必填
 
 
