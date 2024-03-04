@@ -8,12 +8,5 @@
         "sender": { "node_id": "{{ cookiecutter.node_slug }}" }
         {%- endif %}
     },
-    "generic": {
-        "enable_metrics": true,
-        "metrics_sender": {
-            "node_id": "{{ cookiecutter.node_slug }}_metrics",
-            "raw_type": "Metrics"
-        }
-    },
     "params": {}
 }

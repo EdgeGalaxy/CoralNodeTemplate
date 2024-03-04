@@ -9,8 +9,8 @@ init() {
         echo "rye already installed"
     fi
     git init
-    rye pin 3.11
-    rye sync
+    # rye pin 3.11
+    # rye sync
 }
 
 
