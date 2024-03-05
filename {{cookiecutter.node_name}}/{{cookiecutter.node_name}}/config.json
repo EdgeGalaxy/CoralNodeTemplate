@@ -1,11 +1,11 @@
 {
-    "node_id": "{{ cookiecutter.node_name | lower }}",
+    "node_id": "{{ cookiecutter.node_slug | lower }}",
     "meta": {
         {%- if cookiecutter.node_type|lower != 'dataproducernode' %}
-        "receivers": [{ "node_id": "{{ cookiecutter.receiver_node }}" }],
+        "receivers": [{ "node_id": "{{ cookiecutter.receiver_node | lower }}" }],
         {%- endif %}
         {%- if cookiecutter.node_type|lower != 'MediaProcessNode' %}
-        "sender": { "node_id": "{{ cookiecutter.node_slug }}" }
+        "sender": { "node_id": "{{ cookiecutter.node_slug | lower }}" }
         {%- endif %}
     },
     "params": {}

@@ -5,6 +5,7 @@ from typing import Dict
 from typing import Union
 
 import numpy as np
+from pydantic import Field
 from coral import CoralNode, ParamsModel, FirstPayload, RawPayload, RTManager, PTManager
 {%- elif cookiecutter.node_type == 'RecognitionNode' %}
 from coral import CoralNode, ParamsModel, ObjectsPayload, RawPayload,  RTManager, PTManager
@@ -34,14 +35,14 @@ class {{cookiecutter.node_cls}}ParamsModel(ParamsModel):
     {%- if cookiecutter.node_type == 'RecognitionNode' %}
     model_fp: str = 'model.pt'
     {%- endif %}
-    timestamp: float = time.time()
+    timestamp: float = Field(default_factory=time.perf_counter)
 
 
 class {{cookiecutter.node_cls}}(CoralNode):
 
     # 配置文件，默认文件config.json, 可通过环境变量 CORAL_NODE_CONFIG_PATH 覆盖
     config_path = 'config.json'
-    node_type = {{ cookiecutter.node_type }}
+    node_type = '{{ cookiecutter.node_type }}'
 
     def init(self, context: dict):
         """
@@ -89,4 +90,10 @@ class {{cookiecutter.node_cls}}(CoralNode):
 
 
 if __name__ == '__main__':
-    {{cookiecutter.node_cls}}().run()
+    # 脚本入口，包括注册和启动
+    import os
+    run_type = os.getenv("CORAL_NODE_RUN_TYPE", "run")
+    if run_type == 'register':
+        {{cookiecutter.node_cls}}.register()
+    else:
+        {{cookiecutter.node_cls}}().run()
