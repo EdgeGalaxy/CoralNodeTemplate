@@ -8,7 +8,7 @@ class {{ cookiecutter.node_cls }}Algro:
         self.mdoel = self.init_model(model_fp)
     
     def init_model(self, model_fp):
-        return self.model_cls(model_fp)
+        pass
 
     def predict(self, raw):
         return {

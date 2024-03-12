@@ -2,7 +2,7 @@ import time
 
 from typing import Dict
 {%- if cookiecutter.node_type == 'DataProducerNode' %}
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 from pydantic import Field
@@ -21,7 +21,7 @@ from algrothms.core import {{ cookiecutter.node_cls }}Algro
 {%- if cookiecutter.node_type == 'DataProducerNode' %}
 @RTManager.register()
 class {{cookiecutter.node_cls}}ReturnPayload(FirstPayload):
-    raw: Union[np.ndarray, str] 
+    raw: List
 {%- elif cookiecutter.node_type == 'BusinessNode' %}
 @RTManager.register()
 class {{cookiecutter.node_cls}}ReturnPayload(ReturnPayload):
@@ -41,6 +41,8 @@ class {{cookiecutter.node_cls}}ParamsModel(ParamsModel):
 class {{cookiecutter.node_cls}}(CoralNode):
 
     # 配置文件，默认文件config.json, 可通过环境变量 CORAL_NODE_CONFIG_PATH 覆盖
+    node_name = '{{ cookiecutter.node_name_cn }}'
+    node_desc = '{{ cookiecutter.node_desc }}'
     config_path = 'config.json'
     node_type = '{{ cookiecutter.node_type }}'
 
@@ -94,6 +96,6 @@ if __name__ == '__main__':
     import os
     run_type = os.getenv("CORAL_NODE_RUN_TYPE", "run")
     if run_type == 'register':
-        {{cookiecutter.node_cls}}.register()
+        {{cookiecutter.node_cls}}.node_register()
     else:
         {{cookiecutter.node_cls}}().run()
