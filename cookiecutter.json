@@ -6,7 +6,7 @@
   "node_desc": "节点功能: {{ cookiecutter.node_name_cn }}",
   "node_slug": "{{ cookiecutter.node_name | lower | replace('-', '_') }}",
   "node_cls": "{{ cookiecutter.node_name | replace('-', ' ') | replace('_', ' ') | capitalize | replace(' ', '')}}",
-  "node_type": ["DataProducerNode", "RecognitionNode", "BusinessNode", "MediaProcessNode"],
+  "node_type": ["input", "interface", "rule", "trigger", "output"],
   "receiver_node": "",
   "_copy_without_render": [
     ".github"

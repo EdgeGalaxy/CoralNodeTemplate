@@ -1,41 +1,40 @@
 import time
 
 from typing import Dict
-{%- if cookiecutter.node_type == 'DataProducerNode' %}
-from typing import Union, List
 
-import numpy as np
 from pydantic import Field
-from coral import CoralNode, ParamsModel, FirstPayload, RawPayload, RTManager, PTManager
-{%- elif cookiecutter.node_type == 'RecognitionNode' %}
-from coral import CoralNode, ParamsModel, ObjectsPayload, RawPayload,  RTManager, PTManager
-{%- elif cookiecutter.node_type == 'BusinessNode' %}
-from coral import CoralNode, ParamsModel, ReturnPayload, RawPayload,  RTManager, PTManager
-{%- elif cookiecutter.node_type == 'MediaProcessNode' %}
-from coral import CoralNode, ParamsModel, RawPayload,  RTManager, PTManager
+{%- if cookiecutter.node_type == 'input' %}
+import numpy as np
+from coral import CoralNode, BaseParamsModel, FirstPayload, RawPayload, RTManager, PTManager, NodeType
+{%- elif cookiecutter.node_type == 'interface' %}
+from coral import CoralNode, BaseParamsModel, PTManager, ObjectsPayload, InterfaceMode, NodeType
+{%- elif cookiecutter.node_type == 'output' %}
+from coral import CoralNode, BaseParamsModel, RawPayload, PTManager, NodeType
+{%- else %}
+from coral import CoralNode, BaseParamsModel, NodeType, ReturnPayloadWithTS, RawPayload,  RTManager, PTManager
 {%- endif %}
 
-from algrothms.core import {{ cookiecutter.node_cls }}Algro
+from algrothms.core import {{ cookiecutter.node_cls }}Core
 
 
-{%- if cookiecutter.node_type == 'DataProducerNode' %}
+{%- if cookiecutter.node_type == 'trigger' %}
 @RTManager.register()
-class {{cookiecutter.node_cls}}ReturnPayload(FirstPayload):
-    raw: List
-{%- elif cookiecutter.node_type == 'BusinessNode' %}
+class {{cookiecutter.node_cls}}ReturnPayload(ReturnPayloadWithTS):
+    pass
+{%- elif cookiecutter.node_type == 'rule' %}
 @RTManager.register()
-class {{cookiecutter.node_cls}}ReturnPayload(ReturnPayload):
+class {{cookiecutter.node_cls}}ReturnPayload(ReturnPayloadWithTS):
     pass
 {%- endif %}
 
 
 @PTManager.register()
-class {{cookiecutter.node_cls}}ParamsModel(ParamsModel):
+class {{cookiecutter.node_cls}}ParamsModel(BaseParamsModel):
     # 可更改的参数，遵循pydantic的格式
-    {%- if cookiecutter.node_type == 'RecognitionNode' %}
-    model_fp: str = 'model.pt'
+    {%- if cookiecutter.node_type == 'interface' %}
+    weight_fp: str = 'model.pt'
     {%- endif %}
-    timestamp: float = Field(default_factory=time.perf_counter)
+    timestamp: float = Field(default_factory=lambda: time.time())
 
 
 class {{cookiecutter.node_cls}}(CoralNode):
@@ -44,7 +43,7 @@ class {{cookiecutter.node_cls}}(CoralNode):
     node_name = '{{ cookiecutter.node_name_cn }}'
     node_desc = '{{ cookiecutter.node_desc }}'
     config_path = 'config.json'
-    node_type = '{{ cookiecutter.node_type }}'
+    node_type = NodeType.{{ cookiecutter.node_type }}
 
     def init(self, context: dict):
         """
@@ -54,17 +53,19 @@ class {{cookiecutter.node_cls}}(CoralNode):
         """
         # 获取入参
         print(self.params.timestamp)
-        {%- if cookiecutter.node_type == 'RecognitionNode' %}
-        model = {{ cookiecutter.node_cls }}Algro(self.params.model_fp)
+        {%- if cookiecutter.node_type == 'interface' %}
+        model = {{ cookiecutter.node_cls }}Core(self.params.weight_fp)
         context['model'] = model
         {%- endif %}
         context['timestamp'] = time.time()
 
 
-    {%- if cookiecutter.node_type == 'MediaProcessNode' %}
+    {%- if cookiecutter.node_type == 'output' %}
     def sender(self, payload: RawPayload, context: Dict) -> None:
-    {%- elif cookiecutter.node_type == 'RecognitionNode' %}
+    {%- elif cookiecutter.node_type == 'interface' %}
     def sender(self, payload: RawPayload, context: Dict) -> ObjectsPayload:
+    {%- elif cookiecutter.node_type == 'input' %}
+    def sender(self, payload: RawPayload, context: Dict) -> FirstPayload:
     {%- else %}
     def sender(self, payload: RawPayload, context: Dict) -> {{cookiecutter.node_cls}}ReturnPayload:
     {%- endif %}
@@ -76,17 +77,17 @@ class {{cookiecutter.node_cls}}(CoralNode):
         :return: 数据
         """
         print(context['timestamp'])
-        {%- if cookiecutter.node_type == 'DataProducerNode' %}
+        {%- if cookiecutter.node_type == 'input' %}
         raw = np.zeros((640, 640, 3), np.uint8)
         raw[:] = (255, 0, 0)
-        return {{cookiecutter.node_cls}}ReturnPayload(raw=raw)
-        {%- elif cookiecutter.node_type == 'RecognitionNode' %}
+        return FirstPayload(raw=raw)
+        {%- elif cookiecutter.node_type == 'interface' %}
         data = context['model'].predict(payload.raw)
-        return ObjectsPayload(**data)
-        {%- elif cookiecutter.node_type == 'BusinessNode' %}
-        return {{ cookiecutter.node_cls }}ReturnPayload()
-        {%- elif cookiecutter.node_type == 'MediaProcessNode' %}
+        return ObjectsPayload(objects=data, mode=InterfaceMode.APPEND)
+        {%- elif cookiecutter.node_type == 'output' %}
         return None
+        {%- else %}
+        return {{ cookiecutter.node_cls }}ReturnPayload()
         {%- endif %}
 
 

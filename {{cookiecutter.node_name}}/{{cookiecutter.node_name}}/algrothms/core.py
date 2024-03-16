@@ -1,7 +1,7 @@
 
 
 
-class {{ cookiecutter.node_cls }}Algro:
+class {{ cookiecutter.node_cls }}Core:
     model_cls = None
 
     def __init__(self, model_fp):
@@ -11,9 +11,9 @@ class {{ cookiecutter.node_cls }}Algro:
         pass
 
     def predict(self, raw):
-        return {
-            'labels': ['person', 'dog'],
-            'class_ids': [0, 1],
-            'scores': [0.9, 0.8],
-            'boxes': [[120, 120, 120, 120], [130, 130, 130, 130]]
-        }
+        return [{
+            'label': 'person',
+            'class_id': 0,
+            'prop': 0.9,
+            'box': {'x1': 0, 'y1': 0, 'x2': 0, 'y2': 0}
+        }]

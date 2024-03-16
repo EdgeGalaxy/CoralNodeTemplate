@@ -1,10 +1,10 @@
 {
     "node_id": "{{ cookiecutter.node_slug | lower }}",
     "meta": {
-        {%- if cookiecutter.node_type|lower != 'dataproducernode' %}
+        {%- if cookiecutter.node_type|lower != 'input' %}
         "receivers": [{ "node_id": "{{ cookiecutter.receiver_node | lower }}" }],
         {%- endif %}
-        {%- if cookiecutter.node_type|lower != 'MediaProcessNode' %}
+        {%- if cookiecutter.node_type|lower != 'output' %}
         "sender": { "node_id": "{{ cookiecutter.node_slug | lower }}" }
         {%- endif %}
     },
