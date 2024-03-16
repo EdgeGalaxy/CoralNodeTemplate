@@ -14,6 +14,6 @@ class {{ cookiecutter.node_cls }}Core:
         return [{
             'label': 'person',
             'class_id': 0,
-            'prop': 0.9,
+            'prob': 0.9,
             'box': {'x1': 0, 'y1': 0, 'x2': 0, 'y2': 0}
         }]
