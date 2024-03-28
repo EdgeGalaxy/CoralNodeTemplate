@@ -9,7 +9,8 @@ init() {
 }
 
 init_package() {
-    poetry update tzweb --lock -vv
+    poetry install
+	poetry shell
 }
 
 init
