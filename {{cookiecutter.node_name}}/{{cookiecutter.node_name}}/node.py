@@ -7,7 +7,7 @@ from pydantic import Field
 import numpy as np
 from coral import CoralNode, BaseParamsModel, FirstPayload, RawPayload, RTManager, PTManager, NodeType
 {%- elif cookiecutter.node_type == 'interface' %}
-from coral import CoralNode, BaseParamsModel, PTManager, ObjectsPayload, InterfaceMode, NodeType
+from coral import CoralNode, BaseParamsModel, RawPayload, PTManager, ObjectsPayload, InterfaceMode, NodeType
 {%- elif cookiecutter.node_type == 'output' %}
 from coral import CoralNode, BaseParamsModel, RawPayload, PTManager, NodeType
 {%- else %}
@@ -45,7 +45,7 @@ class {{cookiecutter.node_cls}}(CoralNode):
     config_path = 'config.json'
     node_type = NodeType.{{ cookiecutter.node_type }}
 
-    def init(self, context: dict):
+    def init(self, index: int, context: dict):
         """
         初始化参数，可传递到sender方法中
 
